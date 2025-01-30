@@ -1,1 +1,1 @@
-# boilerplate_sequelize
+# boilerplate_mysql
