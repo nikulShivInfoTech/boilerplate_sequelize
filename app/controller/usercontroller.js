@@ -17,6 +17,7 @@ const User = require('../models/userModel');
 const { search, sort, paginate } = require('../services/commanFunction');
 const { sendEmail } = require('../services/mailSender');
 const otpModel = require('../models/otpModel');
+
 const addUser = async (req, res) => {
   try {
     const { error } = userRegistrationValidation.validate(req.body);

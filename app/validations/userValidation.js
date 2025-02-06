@@ -3,7 +3,7 @@ const Joi = require('joi');
 const userRegistrationValidation = Joi.object({
   name: Joi.string().min(3).max(50).required().messages({
     'string.base': 'Name must be a string.',
-    'string.empty': 'Name is required.',
+    'string.empty': 'Name is can not be empty.',
     'string.min': 'Name must be at least 3 characters long.',
     'string.max': 'Name cannot exceed 50 characters.',
     'any.required': 'Name is required.',
@@ -11,12 +11,12 @@ const userRegistrationValidation = Joi.object({
 
   email: Joi.string().email().required().messages({
     'string.email': 'Please enter a valid email address.',
-    'string.empty': 'Email is required.',
+    'string.empty': 'Email is can not be empty.',
     'any.required': 'Email is required.',
   }),
 
   password: Joi.string().min(6).max(20).required().messages({
-    'string.empty': 'Password is required.',
+    'string.empty': 'Password can not be empty.',
     'string.min': 'Password must be at least 6 characters long.',
     'string.max': 'Password cannot exceed 20 characters.',
     'any.required': 'Password is required.',
@@ -38,17 +38,17 @@ const userRegistrationValidation = Joi.object({
   }),
 
   country: Joi.string().required().messages({
-    'string.empty': 'Country is required.',
+    'string.empty': 'Country can not be empty.',
     'any.required': 'Country is required.',
   }),
 
   state: Joi.string().required().messages({
-    'string.empty': 'State is required.',
+    'string.empty': 'State is can not be empty.',
     'any.required': 'State is required.',
   }),
 
   city: Joi.string().required().messages({
-    'string.empty': 'City is required.',
+    'string.empty': 'City is can not be empty.',
     'any.required': 'City is required.',
   }),
 
@@ -57,14 +57,14 @@ const userRegistrationValidation = Joi.object({
     .required()
     .messages({
       'string.pattern.base': 'Pincode must be 5 or 6 digits long.',
-      'string.empty': 'Pincode is required.',
+      'string.empty': 'Pincode is can not be empty.',
       'any.required': 'Pincode is required.',
     }),
 });
 const editUserValidation = Joi.object({
   name: Joi.string().min(3).max(50).required().messages({
     'string.base': 'Name must be a string.',
-    'string.empty': 'Name is required.',
+    'string.empty': 'Name is can not be empty.',
     'string.min': 'Name must be at least 3 characters long.',
     'string.max': 'Name cannot exceed 50 characters.',
     'any.required': 'Name is required.',
@@ -86,17 +86,17 @@ const editUserValidation = Joi.object({
   }),
 
   country: Joi.string().required().messages({
-    'string.empty': 'Country is required.',
+    'string.empty': 'Country is can not be empty.',
     'any.required': 'Country is required.',
   }),
 
   state: Joi.string().required().messages({
-    'string.empty': 'State is required.',
+    'string.empty': 'State is can not be empty.',
     'any.required': 'State is required.',
   }),
 
   city: Joi.string().required().messages({
-    'string.empty': 'City is required.',
+    'string.empty': 'City is can not be empty.',
     'any.required': 'City is required.',
   }),
 
@@ -105,19 +105,19 @@ const editUserValidation = Joi.object({
     .required()
     .messages({
       'string.pattern.base': 'Pincode must be 5 or 6 digits long.',
-      'string.empty': 'Pincode is required.',
+      'string.empty': 'Pincode is can not be empty.',
       'any.required': 'Pincode is required.',
     }),
 });
 const loginValidation = Joi.object({
   email: Joi.string().email().required().messages({
     'string.email': 'Please enter a valid email address.',
-    'string.empty': 'Email is required.',
+    'string.empty': 'Email is can not be empty.',
     'any.required': 'Email is required.',
   }),
 
   password: Joi.string().min(6).max(20).required().messages({
-    'string.empty': 'Password is required.',
+    'string.empty': 'Password is can not be empty.',
     'string.min': 'Password must be at least 6 characters long.',
     'string.max': 'Password cannot exceed 20 characters.',
     'any.required': 'Password is required.',
@@ -126,7 +126,7 @@ const loginValidation = Joi.object({
 const resetPasswordvalidate = Joi.object({
   currentPassword: Joi.string().required().min(6).max(20).messages({
     'string.base': 'Current password must be a string',
-    'string.empty': 'Current password cannot be empty',
+    'string.empty': 'Current password can not be empty',
     'string.max': 'Current password cannot exceed 20 characters.',
     'any.required': 'Current password is a required field',
     'string.min': 'Current password must be at least 6 characters long',
@@ -149,7 +149,7 @@ const resetPasswordvalidate = Joi.object({
 });
 const forgotPasswordValidation = Joi.object({
   otp: Joi.number().min(6).required().messages({
-    'string.empty': 'OTP is required.',
+    'string.empty': 'OTP is can not be empty.',
     'string.min': 'OTP must be at least 6 characters long.',
     'any.required': 'OTP is required.',
   }),
