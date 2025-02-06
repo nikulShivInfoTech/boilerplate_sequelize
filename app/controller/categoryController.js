@@ -102,9 +102,12 @@ const categoryUpdate = async (req, res) => {
           ),
         );
     }
-    const updatedCategory = await existingCategory.update({ category_name });
+    const updatedCategory = await category.update(
+      { category_name },
+      { where: { id, isDeleted: false } },
+    );
 
-    if (updatedCategory) {
+    if (updatedCategory[0] === 1) {
       logger.info(`Category ${message.UPDATED_SUCCESS}`);
 
       return res
@@ -120,7 +123,7 @@ const categoryUpdate = async (req, res) => {
   } catch (error) {
     logger.error(`${message.INTERNAL_SERVER_ERROR}: ${error.message}`);
 
-    return res
+    return res1
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json(
         new GeneralResponse(
@@ -162,6 +165,7 @@ const categoryView = async (req, res) => {
             `Category ${message.NOT_FOUND}`,
           ),
         );
+
     } else {
       logger.info(`Category fetch ${message.SUCCESS}`);
 
@@ -175,6 +179,7 @@ const categoryView = async (req, res) => {
             existingCategory,
           ),
         );
+
     }
   } catch (error) {
     logger.error(`${message.INTERNAL_SERVER_ERROR}: ${error.message}`);
@@ -188,6 +193,7 @@ const categoryView = async (req, res) => {
           message.INTERNAL_SERVER_ERROR,
         ),
       );
+
   }
 };
 
@@ -213,6 +219,7 @@ const categoryDelete = async (req, res) => {
     });
 
     if (!existingCategory) {
+
       return res
         .status(StatusCodes.NOT_FOUND)
         .json(
@@ -223,8 +230,15 @@ const categoryDelete = async (req, res) => {
           ),
         );
     }
-    const updatedCategory = await existingCategory.update({ isDeleted: true });
-    if (updatedCategory) {
+
+    const deletedCategory = await category.update(
+      { isDeleted: true },
+      {
+        where: { id, isDeleted: false },
+      },
+    );
+
+    if (deletedCategory[0] === 1) {
       logger.info(`Category ${message.IS_DELETED}`);
 
       return res
