@@ -68,7 +68,6 @@ const categoryUpdate = async (req, res) => {
           `${message.ID_REQUIRED}`,
         ),
       );
-
   }
 
   try {
@@ -85,7 +84,6 @@ const categoryUpdate = async (req, res) => {
             error.details[0].message,
           ),
         );
-
     }
 
     const { category_name } = value;
@@ -104,20 +102,21 @@ const categoryUpdate = async (req, res) => {
           ),
         );
     }
-    await existingCategory.update({ category_name });
+    const updatedCategory = await existingCategory.update({ category_name });
 
-    logger.info(`Category ${message.UPDATED_SUCCESS}`);
+    if (updatedCategory) {
+      logger.info(`Category ${message.UPDATED_SUCCESS}`);
 
-    return res
-      .status(StatusCodes.ACCEPTED)
-      .json(
-        new GeneralResponse(
-          responseStatus.RESPONSE_SUCCESS,
-          StatusCodes.ACCEPTED,
-          `Category ${message.UPDATED_SUCCESS}`,
-        ),
-      );
-
+      return res
+        .status(StatusCodes.ACCEPTED)
+        .json(
+          new GeneralResponse(
+            responseStatus.RESPONSE_SUCCESS,
+            StatusCodes.ACCEPTED,
+            `Category ${message.UPDATED_SUCCESS}`,
+          ),
+        );
+    }
   } catch (error) {
     logger.error(`${message.INTERNAL_SERVER_ERROR}: ${error.message}`);
 
@@ -131,8 +130,8 @@ const categoryUpdate = async (req, res) => {
         ),
       );
   }
-
 };
+
 const categoryView = async (req, res) => {
   const { id } = req.params;
   if (!id) {
@@ -147,7 +146,6 @@ const categoryView = async (req, res) => {
           `${message.ID_REQUIRED}`,
         ),
       );
-
   }
   try {
     const existingCategory = await category.findOne({
@@ -155,7 +153,6 @@ const categoryView = async (req, res) => {
     });
 
     if (!existingCategory) {
-
       return res
         .status(StatusCodes.NOT_FOUND)
         .json(
@@ -165,20 +162,20 @@ const categoryView = async (req, res) => {
             `Category ${message.NOT_FOUND}`,
           ),
         );
+    } else {
+      logger.info(`Category fetch ${message.SUCCESS}`);
 
+      return res
+        .status(StatusCodes.OK)
+        .json(
+          new GeneralResponse(
+            responseStatus.RESPONSE_SUCCESS,
+            StatusCodes.OK,
+            `Category fetch ${message.SUCCESS}`,
+            existingCategory,
+          ),
+        );
     }
-    logger.info(`Category fetch ${message.SUCCESS}`);
-
-    return res
-      .status(StatusCodes.OK)
-      .json(
-        new GeneralResponse(
-          responseStatus.RESPONSE_SUCCESS,
-          StatusCodes.OK,
-          `Category fetch ${message.SUCCESS}`,
-          existingCategory,
-        ),
-      );
   } catch (error) {
     logger.error(`${message.INTERNAL_SERVER_ERROR}: ${error.message}`);
 
@@ -193,6 +190,7 @@ const categoryView = async (req, res) => {
       );
   }
 };
+
 const categoryDelete = async (req, res) => {
   const { id } = req.params;
   if (!id) {
@@ -207,7 +205,6 @@ const categoryDelete = async (req, res) => {
           `${message.ID_REQUIRED}`,
         ),
       );
-
   }
 
   try {
@@ -216,7 +213,6 @@ const categoryDelete = async (req, res) => {
     });
 
     if (!existingCategory) {
-
       return res
         .status(StatusCodes.NOT_FOUND)
         .json(
@@ -226,22 +222,21 @@ const categoryDelete = async (req, res) => {
             `Category ${message.NOT_FOUND}`,
           ),
         );
-
     }
-    await existingCategory.update({ isDeleted: true });
+    const updatedCategory = await existingCategory.update({ isDeleted: true });
+    if (updatedCategory) {
+      logger.info(`Category ${message.IS_DELETED}`);
 
-    logger.info(`Category ${message.IS_DELETED}`);
-
-    return res
-      .status(StatusCodes.ACCEPTED)
-      .json(
-        new GeneralResponse(
-          responseStatus.RESPONSE_SUCCESS,
-          StatusCodes.ACCEPTED,
-          `Category ${message.IS_DELETED}`,
-        ),
-      );
-
+      return res
+        .status(StatusCodes.ACCEPTED)
+        .json(
+          new GeneralResponse(
+            responseStatus.RESPONSE_SUCCESS,
+            StatusCodes.ACCEPTED,
+            `Category ${message.IS_DELETED}`,
+          ),
+        );
+    }
   } catch (error) {
     logger.error(`${message.INTERNAL_SERVER_ERROR}: ${error.message}`);
 
@@ -254,7 +249,6 @@ const categoryDelete = async (req, res) => {
           message.INTERNAL_SERVER_ERROR,
         ),
       );
-
   }
 };
 
@@ -291,7 +285,6 @@ const categoryList = async (req, res) => {
           },
         ),
       );
-
     } else {
       return res
         .status(StatusCodes.NOT_FOUND)
@@ -302,7 +295,6 @@ const categoryList = async (req, res) => {
             `Category data ${message.NOT_FOUND}`,
           ),
         );
-
     }
   } catch (err) {
     logger.error('Error retrieving users:', err);
@@ -316,7 +308,6 @@ const categoryList = async (req, res) => {
           message.INTERNAL_SERVER_ERROR,
         ),
       );
-      
   }
 };
 
