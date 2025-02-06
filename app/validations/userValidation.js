@@ -61,6 +61,7 @@ const userRegistrationValidation = Joi.object({
       'any.required': 'Pincode is required.',
     }),
 });
+
 const editUserValidation = Joi.object({
   name: Joi.string().min(3).max(50).required().messages({
     'string.base': 'Name must be a string.',
@@ -109,6 +110,7 @@ const editUserValidation = Joi.object({
       'any.required': 'Pincode is required.',
     }),
 });
+
 const loginValidation = Joi.object({
   email: Joi.string().email().required().messages({
     'string.email': 'Please enter a valid email address.',
@@ -123,6 +125,7 @@ const loginValidation = Joi.object({
     'any.required': 'Password is required.',
   }),
 });
+
 const resetPasswordvalidate = Joi.object({
   currentPassword: Joi.string().required().min(6).max(20).messages({
     'string.base': 'Current password must be a string',
@@ -147,6 +150,7 @@ const resetPasswordvalidate = Joi.object({
       'any.required': 'Confirm password is a required field',
     }),
 });
+
 const forgotPasswordValidation = Joi.object({
   otp: Joi.number().min(6).required().messages({
     'string.empty': 'OTP is can not be empty.',
@@ -169,6 +173,7 @@ const forgotPasswordValidation = Joi.object({
       'any.required': 'Confirm password is a required field',
     }),
 })
+
 module.exports = {
   userRegistrationValidation,
   editUserValidation,
