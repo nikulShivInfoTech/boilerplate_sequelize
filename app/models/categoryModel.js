@@ -1,20 +1,26 @@
+// categoryModel.js
 const { DataTypes } = require('sequelize');
-const { sequelize } = require('../helper/db');
 
-const category = sequelize.define('Category', {
-    id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
-    },
-    category_name: {
-        type: DataTypes.STRING,
-        allowNull: false,
-    },
-    isDeleted: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false,
-    },
-}
-);
-module.exports = category;
+module.exports = (sequelize) => {
+    const categoryModel = sequelize.define('category', {
+        id: {
+            type: DataTypes.INTEGER,
+            primaryKey: true,
+            autoIncrement: true,
+        },
+        category_name: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
+        isDeleted: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false,
+        },
+    }, {
+        timestamps: true,
+    });
+    categoryModel.associate = (models) => {
+        categoryModel.hasMany(models.product, { foreignKey: 'category_id', as: 'products' });
+      };
+    return categoryModel;
+};

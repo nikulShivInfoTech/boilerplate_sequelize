@@ -16,7 +16,9 @@ const message = {
     FAILED_OTP_SEND: 'Failed to send OTP email',                      
     OTP_EXPIRED: 'Otp does not match',                      
     ID_REQUIRED: 'ID must required',   
-    IS_DELETED:'is deleted'                   
+    IS_DELETED:'is deleted',                   
+    ERR_IMAGE_UPLOAD:'Error uploading images',                   
+    NO_CONTENT:'No content provided',                   
 };
 
 module.exports = message;

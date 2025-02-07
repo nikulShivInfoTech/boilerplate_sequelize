@@ -4,7 +4,8 @@ const message = require('../utils/message');
 const responseStatus = require('../utils/enum');
 const { categoryAddV } = require('../validations/categoryValidation');
 const logger = require('../helper/logger');
-const category = require('../models/categoryModel');
+const { sequelize } = require('../helper/db'); 
+const category = require('../models/categoryModel')(sequelize);
 const { search, sort, paginate } = require('../services/commanFunction');
 
 const categoryAdd = async (req, res) => {
@@ -123,7 +124,7 @@ const categoryUpdate = async (req, res) => {
   } catch (error) {
     logger.error(`${message.INTERNAL_SERVER_ERROR}: ${error.message}`);
 
-    return res1
+    return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json(
         new GeneralResponse(
