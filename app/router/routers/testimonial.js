@@ -9,6 +9,7 @@ const {
   deleteTestimonial,
   listTestimonial
 } = require('../../controller/tetimonialController.js');
+
 route.post('/add', auth(), addTestimonial);
 route.post('/list', auth(), listTestimonial);
 route.get('/view/:id', auth(), viewTestimonial);

@@ -36,7 +36,7 @@ const addTestimonial = async (req, res) => {
     });
 
     if (!testimonialCreate) {
-      logger.error(`Testimonial creation failed`);
+      logger.error(`${message.FAILED_TO_CREATE} testimonial`);
 
       return res
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
@@ -44,7 +44,7 @@ const addTestimonial = async (req, res) => {
           new GeneralResponse(
             responseStatus.RESPONSE_ERROR,
             StatusCodes.INTERNAL_SERVER_ERROR,
-            'Failed to create testimonial',
+            `${message.FAILED_TO_CREATE} testimonial`,
           ),
         );
     } else {
@@ -57,12 +57,13 @@ const addTestimonial = async (req, res) => {
             responseStatus.RESPONSE_SUCCESS,
             StatusCodes.CREATED,
             `Testimonial ${message.ADD_SUCCESS}`,
-            testimonialCreate,
+            { id: testimonialCreate.id },
           ),
         );
+
     }
   } catch (error) {
-    logger.error(`Error add testimonial: ${error}`);
+    logger.error(`${message.INTERNAL_SERVER_ERROR} ${error}`);
 
     return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
@@ -91,8 +92,8 @@ const viewTestimonial = async (req, res) => {
       );
   }
 
-  const numericId = Number(id);
-  if (isNaN(numericId)) {
+  const testimonialId = Number(id);
+  if (isNaN(testimonialId)) {
     return res
       .status(StatusCodes.BAD_REQUEST)
       .json(
@@ -106,7 +107,7 @@ const viewTestimonial = async (req, res) => {
 
   try {
     const testimonialView = await testimonialModel.findOne({
-      where: { id: numericId, isDeleted: false },
+      where: { id: testimonialId, isDeleted: false },
       attributes: ['name', 'description', 'rating'],
     });
 
@@ -129,13 +130,13 @@ const viewTestimonial = async (req, res) => {
           new GeneralResponse(
             responseStatus.RESPONSE_SUCCESS,
             StatusCodes.OK,
-            message.RETRIVE_SUCCESS,
+            `Testimonial ${message.RETRIVE_SUCCESS}`,
             testimonialView,
           ),
         );
     }
   } catch (error) {
-    logger.error(`Error finding testimonial: ${error.message}`);
+    logger.error(`${message.INTERNAL_SERVER_ERROR} ${error}`);
     return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json(
@@ -163,8 +164,8 @@ const editTestimonial = async (req, res) => {
       );
   }
 
-  const numericId = Number(id);
-  if (isNaN(numericId)) {
+  const testimonialId = Number(id);
+  if (isNaN(testimonialId)) {
     return res
       .status(StatusCodes.BAD_REQUEST)
       .json(
@@ -177,11 +178,11 @@ const editTestimonial = async (req, res) => {
   }
 
   try {
-    const isAvailable = await testimonialModel.findOne({
+    const isTestimonialAvailable = await testimonialModel.findOne({
       where: { id, isDeleted: false },
     });
 
-    if (!isAvailable) {
+    if (!isTestimonialAvailable) {
       return res
         .status(StatusCodes.NOT_FOUND)
         .json(
@@ -217,6 +218,8 @@ const editTestimonial = async (req, res) => {
     );
 
     if (updateTestimonial[0] === 1) {
+      logger.info(`Testimonial ${message.UPDATED_SUCCESS}`);
+
       return res
         .status(StatusCodes.ACCEPTED)
         .json(
@@ -240,7 +243,7 @@ const editTestimonial = async (req, res) => {
         );
     }
   } catch (error) {
-    logger.error(`Error editing testimonial: ${error.message}`);
+    logger.error(`${message.INTERNAL_SERVER_ERROR} ${error}`);
     return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json(
@@ -268,8 +271,8 @@ const deleteTestimonial = async (req, res) => {
       );
   }
 
-  const numericId = Number(id);
-  if (isNaN(numericId)) {
+  const testimonialId = Number(id);
+  if (isNaN(testimonialId)) {
     return res
       .status(StatusCodes.BAD_REQUEST)
       .json(
@@ -281,11 +284,11 @@ const deleteTestimonial = async (req, res) => {
       );
   }
   try {
-    const isAvailable = await testimonialModel.findOne({
-      where: { id, isDeleted: false },
+    const isTestimonialAvailable = await testimonialModel.findOne({
+      where: { id: testimonialId, isDeleted: false },
     });
 
-    if (!isAvailable) {
+    if (!isTestimonialAvailable) {
       return res
         .status(StatusCodes.NOT_FOUND)
         .json(
@@ -297,12 +300,12 @@ const deleteTestimonial = async (req, res) => {
         );
     }
 
-    const deleteTestimonial = await testimonialModel.update(
+    const updatedTestimonial = await testimonialModel.update(
       { isDeleted: true },
       { where: { id, isDeleted: false } },
     );
 
-    if (deleteTestimonial[0] === 1) {
+    if (updatedTestimonial[0] === 1) {
       return res
         .status(StatusCodes.ACCEPTED)
         .json(
@@ -326,7 +329,7 @@ const deleteTestimonial = async (req, res) => {
         );
     }
   } catch (error) {
-    logger.error(`Error editing testimonial: ${error.message}`);
+    logger.error(`${message.INTERNAL_SERVER_ERROR} ${error}`);
     return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json(
@@ -340,65 +343,61 @@ const deleteTestimonial = async (req, res) => {
 };
 
 const listTestimonial = async (req, res) => {
-    try {
-        const { searchKey, searchValue, sortBy, order, page, limit } = req.body;
-    
-        const testimonials = await testimonialModel.findAll({
-          where: { isDeleted: false },
-          attributes: ['id', 'name', 'description','rating','createdAt'],
+  try {
+    const { searchKey, searchValue, sortBy, order, page, limit } = req.body;
 
-        });
-    
-        let filteredData = search(testimonials, searchKey, searchValue);
-        filteredData = sort(filteredData, sortBy, order);
-        const paginatedData = paginate(
-          filteredData,
-          parseInt(page, 10) || 1,
-          parseInt(limit, 10) || 10,
+    const testimonials = await testimonialModel.findAll({
+      where: { isDeleted: false },
+      attributes: ['id', 'name', 'description', 'rating', 'createdAt'],
+    });
+
+    let filteredData = search(testimonials, searchKey, searchValue);
+    filteredData = sort(filteredData, sortBy, order);
+    const paginatedData = paginate(
+      filteredData,
+      parseInt(page, 10) || 1,
+      parseInt(limit, 10) || 10,
+    );
+
+    if (paginatedData.length > 0) {
+      logger.info(`Testimonial ${message.RETRIVE_SUCCESS}`);
+      return res.status(StatusCodes.OK).json(
+        new GeneralResponse(
+          responseStatus.RESPONSE_SUCCESS,
+          StatusCodes.OK,
+          `Testimonial ${message.RETRIVE_SUCCESS}`,
+          {
+            total: filteredData.length,
+            page: parseInt(page, 10) || 1,
+            limit: parseInt(limit, 10) || 10,
+            testimonials: paginatedData,
+          },
+        ),
+      );
+    } else {
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json(
+          new GeneralResponse(
+            responseStatus.RESPONSE_ERROR,
+            StatusCodes.NOT_FOUND,
+            `Testimonial data ${message.NOT_FOUND}`,
+          ),
         );
-    
-        if (paginatedData.length > 0) {
-    
-          return res.status(StatusCodes.OK).json(
-            new GeneralResponse(
-              responseStatus.RESPONSE_SUCCESS,
-              StatusCodes.OK,
-              `Testimonial ${message.RETRIVE_SUCCESS}`,
-              {
-                total: filteredData.length,
-                page: parseInt(page, 10) || 1,
-                limit: parseInt(limit, 10) || 10,
-                testimonials: paginatedData,
-              },
-            ),
-          );
-    
-        } else {
-    
-          return res
-            .status(StatusCodes.NOT_FOUND)
-            .json(
-              new GeneralResponse(
-                responseStatus.RESPONSE_ERROR,
-                StatusCodes.NOT_FOUND,
-                `Testimonial data ${message.NOT_FOUND}`,
-              ),
-            );
-    
-        }
-      } catch (error) {
-        logger.error('Error retrieving Testimonial:', error);
-    
-        return res
-          .status(StatusCodes.INTERNAL_SERVER_ERROR)
-          .json(
-            new GeneralResponse(
-              responseStatus.RESPONSE_ERROR,
-              StatusCodes.INTERNAL_SERVER_ERROR,
-              message.INTERNAL_SERVER_ERROR,
-            ),
-          );
-      }
+    }
+  } catch (error) {
+    logger.error(`${ message.INTERNAL_SERVER_ERROR} ${ error}`);
+
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json(
+        new GeneralResponse(
+          responseStatus.RESPONSE_ERROR,
+          StatusCodes.INTERNAL_SERVER_ERROR,
+          message.INTERNAL_SERVER_ERROR,
+        ),
+      );
+  }
 };
 
 module.exports = {

@@ -21,6 +21,7 @@ const message = {
     NO_CONTENT:'No content provided',                   
     WENT_WRONG:'Something went wrong!!',                   
     INVALID_ID:'Invalid ID format',                   
+    FAILED_TO_CREATE:'Failed to create',                   
 };
 
 module.exports = message;
