@@ -81,6 +81,8 @@ const viewTestimonial = async (req, res) => {
   const { id } = req.params;
 
   if (!id) {
+    logger.error(`${message.ID_REQUIRED}`)
+
     return res
       .status(StatusCodes.BAD_REQUEST)
       .json(
@@ -94,6 +96,8 @@ const viewTestimonial = async (req, res) => {
 
   const testimonialId = Number(id);
   if (isNaN(testimonialId)) {
+  logger.error(`${message.INVALID_ID}`)
+
     return res
       .status(StatusCodes.BAD_REQUEST)
       .json(
@@ -153,6 +157,7 @@ const editTestimonial = async (req, res) => {
   const { id } = req.params;
 
   if (!id) {
+    logger.error(`${message.ID_REQUIRED}`)
     return res
       .status(StatusCodes.BAD_REQUEST)
       .json(
@@ -166,6 +171,7 @@ const editTestimonial = async (req, res) => {
 
   const testimonialId = Number(id);
   if (isNaN(testimonialId)) {
+    logger.error(`${message.INVALID_ID}`)
     return res
       .status(StatusCodes.BAD_REQUEST)
       .json(
@@ -183,6 +189,7 @@ const editTestimonial = async (req, res) => {
     });
 
     if (!isTestimonialAvailable) {
+        logger.error(`Testimonial ${message.NOT_FOUND}`)
       return res
         .status(StatusCodes.NOT_FOUND)
         .json(
@@ -260,6 +267,7 @@ const deleteTestimonial = async (req, res) => {
   const { id } = req.params;
 
   if (!id) {
+    logger.error(`${message.ID_REQUIRED}`)
     return res
       .status(StatusCodes.BAD_REQUEST)
       .json(
@@ -273,6 +281,7 @@ const deleteTestimonial = async (req, res) => {
 
   const testimonialId = Number(id);
   if (isNaN(testimonialId)) {
+    logger.error(`${message.INVALID_ID}`)
     return res
       .status(StatusCodes.BAD_REQUEST)
       .json(
@@ -289,6 +298,7 @@ const deleteTestimonial = async (req, res) => {
     });
 
     if (!isTestimonialAvailable) {
+        logger.error(`Testimonial ${message.NOT_FOUND}`)
       return res
         .status(StatusCodes.NOT_FOUND)
         .json(
@@ -306,6 +316,7 @@ const deleteTestimonial = async (req, res) => {
     );
 
     if (updatedTestimonial[0] === 1) {
+        logger.info(`Testimonial ${message.IS_DELETED}`)
       return res
         .status(StatusCodes.ACCEPTED)
         .json(
@@ -375,6 +386,7 @@ const listTestimonial = async (req, res) => {
         ),
       );
     } else {
+        logger.error(`Testimonial data ${message.NOT_FOUND}`)
       return res
         .status(StatusCodes.NOT_FOUND)
         .json(
